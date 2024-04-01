@@ -1,0 +1,32 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "ramamaster","ramadevelop" ]
+  pull_request:
+    branches: [ "ramamaster", "ramadevelop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+          
+      - name: docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{secrets.DOCKERUSERNAME}}
+          password: ${{secrets.DOCKER}}
+
+      - name: build docker compose
+        uses: hoverkraft-tech/compose-action@v1.5.1
+        with:
+          compose-file: "./compose.yaml"
+
+      - name: push dockerin
+        run: |
+          docker-compose push
+          docker tag gvenzl/oracle-free:latest ${{secrets.DOCKERUSERNAME}}/oracle:version1.0.2
+          docker push ${{secrets.DOCKERUSERNAME}}/oracle:version1.0.2
+          
