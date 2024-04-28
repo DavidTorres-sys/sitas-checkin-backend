@@ -29,4 +29,4 @@ COPY --from=build /app/target/checkin-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
 
 # Delay the start of the application by 60 seconds
-CMD ["sh", "-c", "sleep 50 && java -jar checkin-0.0.1-SNAPSHOT.jar"]
+CMD ["sh", "-c", "sleep 1 && java -jar checkin-0.0.1-SNAPSHOT.jar"]

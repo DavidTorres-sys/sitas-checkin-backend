@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: checkin
+  datasource:
+    url: jdbc:oracle:thin:@host.docker.internal:1521/XE
+    username: system
+    password: password
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        order_inserts: true
+        dialect: org.hibernate.dialect.OracleDialect
+
+airline-api:
+  openapi:
+    dev-url: http://localhost:8080/airline-api
+server:
+  port: 8080
+logging:
+  level:
+    root: DEBUG
+    org.springframework: DEBUG
