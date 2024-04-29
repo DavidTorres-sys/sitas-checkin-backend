@@ -1,4 +1,4 @@
-package com.sitas.checkin.domain.mapper.user;
+package com.sitas.checkin.domain.jpa.mapper.user;
 
 import com.sitas.checkin.domain.dto.BoardingPassDTO;
 import com.sitas.checkin.domain.jpa.model.user.BoardingPass;

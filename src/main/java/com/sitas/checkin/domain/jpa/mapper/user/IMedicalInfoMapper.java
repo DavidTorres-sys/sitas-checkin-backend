@@ -1,21 +1,25 @@
-package com.sitas.checkin.domain.mapper.user;
+package com.sitas.checkin.domain.jpa.mapper.user;
 
 import com.sitas.checkin.domain.dto.MedicalInfoDTO;
 import com.sitas.checkin.domain.jpa.model.user.MedicalInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper interface for mapping between the MedicalInfo entity and its corresponding DTO.
  * This interface defines methods to map MedicalInfo entities to MedicalInfoDTOs and vice versa.
  */
-@Mapper
+@Component
+@Mapper(componentModel = "spring")
 public interface IMedicalInfoMapper {
 
     /**
      * Singleton instance of the IMedicalInfoMapper interface.
      */
     IMedicalInfoMapper INSTANCE = Mappers.getMapper(IMedicalInfoMapper.class);
+
 
     /**
      * Maps a MedicalInfo entity to a MedicalInfoDTO.
