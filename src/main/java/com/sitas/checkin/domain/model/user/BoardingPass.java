@@ -1,5 +1,6 @@
 package com.sitas.checkin.domain.model.user;
 
+import com.sitas.checkin.domain.model.airline.Flight;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -26,17 +27,32 @@ public class BoardingPass {
     @Column(name = "BOARDING_PASS_ID")
     private Integer boardingPassId;
 
+    /**
+     * Passenger associated with this boarding pass.
+     * Represents a many-to-one relationship with the Passenger entity.
+     */
+    @ManyToOne
     @JoinColumn(name = "passenger_id", nullable = false)
     @NonNull
-    private Integer passenger;
+    private Passenger passenger;
 
+    /**
+     * Booking associated with this boarding pass.
+     * Represents a many-to-one relationship with the Booking entity.
+     */
+    @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)
     @NonNull
-    private Integer booking;
+    private Booking booking;
 
+    /**
+     * Flight associated with this boarding pass.
+     * Represents a many-to-one relationship with the Flight entity.
+     */
+    @ManyToOne
     @JoinColumn(name = "Flight_ID", nullable = false)
     @NonNull
-    private Integer flight;
+    private Flight flight;
 
     /**
      * Medical information associated with this boarding pass.

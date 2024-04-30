@@ -1,8 +1,12 @@
 package com.sitas.checkin.services.boardingpass.service;
 
 
-import com.sitas.checkin.domain.model.user.BoardingPass;
+import com.sitas.checkin.domain.model.airline.Flight;
+import com.sitas.checkin.domain.model.user.*;
+import com.sitas.checkin.domain.repository.airline.IFlightRepository;
 import com.sitas.checkin.domain.repository.user.IBoardingPassRepository;
+import com.sitas.checkin.domain.repository.user.IPassengerRepository;
+import com.sitas.checkin.domain.repository.user.IPersonRepository;
 import com.sitas.checkin.utils.exception.BusinessException;
 import com.sitas.checkin.utils.exception.DataDuplicatedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Timestamp;
 import java.util.Optional;
 
 /**
@@ -22,13 +27,27 @@ import java.util.Optional;
 @Service
 public class BoardingPassServiceImpl implements IBoardingPassService{
 
+    private final IBoardingPassRepository boardingPassRepository;
+    private final IPassengerRepository passengerRepository;
+    private final IFlightRepository flightRepository;
+    private final IPersonRepository personRepository;
+
     @Autowired
-    private IBoardingPassRepository repository;
+    public BoardingPassServiceImpl(IBoardingPassRepository boardingPassRepository,
+                                   IPassengerRepository passengerRepository,
+                                   IPersonRepository personRepository,
+                                   IFlightRepository flightRepository) {
+        this.boardingPassRepository = boardingPassRepository;
+        this.passengerRepository = passengerRepository;
+        this.flightRepository = flightRepository;
+        this.personRepository = personRepository;
+    }
 
     /**
      * Creates a new boarding pass.
      *
-     * @param boardingPass The boarding pass to create.
+     * @param lastName     The last name of the passenger.
+     * @param flightNumber The flight number.
      * @return ResponseEntity with HTTP status 201 (CREATED) and the created boarding pass if successful,
      *         ResponseEntity with HTTP status 409 (CONFLICT) if the boarding pass already exists,
      *         ResponseEntity with HTTP status 500 (INTERNAL_SERVER_ERROR) if an unexpected error occurs.
@@ -39,14 +58,33 @@ public class BoardingPassServiceImpl implements IBoardingPassService{
      *
      */
     @Override
-    public ResponseEntity<BoardingPass> createBoardingPass(BoardingPass boardingPass) {
+    public ResponseEntity<BoardingPass> createBoardingPass(String lastName, String flightNumber) {
         try {
-            // Get the passenger ID from the boarding pass
-            // int passengerId = boardingPass.getPassenger().getPassengerId();
-            // Check if a boarding pass with the given ID already exists
-            // Boarding pass does not exist, proceed to create
-            BoardingPass createdBoardingPass = repository.save(boardingPass);
-            return ResponseEntity.ok(createdBoardingPass);
+            // Find passenger by last name
+            Person person = personRepository.findByLastName(lastName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found"));
+
+            // Find flight by flight number
+            Flight flight = flightRepository.findByFlightNumber(flightNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Flight not found"));
+
+            // Find passenger by id
+            Passenger passenger = passengerRepository.findById(person.getPersonId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found"));
+
+            // Create a new boarding pass
+            BoardingPass boardingPass = new BoardingPass();
+            boardingPass.setPassenger(passenger);
+            boardingPass.setFlight(flight);
+            // Assuming you have default values for medicalInfo and luggageInfo
+            boardingPass.setMedicalInfo(new MedicalInfo());
+            boardingPass.setLuggageInfo(new LuggageInfo());
+            boardingPass.setBoardingTime(new Timestamp(System.currentTimeMillis()));
+
+            // Save the boarding pass
+            BoardingPass createdBoardingPass = boardingPassRepository.save(boardingPass);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdBoardingPass);
 
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -77,7 +115,7 @@ public class BoardingPassServiceImpl implements IBoardingPassService{
     public ResponseEntity<BoardingPass> getBoardingPass(int passengerId) {
         try {
             // Retrieve the boarding pass associated with the passenger ID
-            Optional<BoardingPass> optionalBoardingPass = repository.findById(passengerId);
+            Optional<BoardingPass> optionalBoardingPass = boardingPassRepository.findById(passengerId);
             // Check if the boarding pass exists
             if (optionalBoardingPass.isPresent()) {
                 // Boarding pass found, return it

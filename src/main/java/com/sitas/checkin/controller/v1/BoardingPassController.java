@@ -14,10 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -42,7 +39,8 @@ public class BoardingPassController {
     /**
      * Endpoint to create a new boarding pass.
      *
-     * @param boardingPass The boarding pass object to be created.
+     * @param lastName     The last name of the passenger.
+     * @param flightNumber The flight number.
      * @return ResponseEntity containing the created boarding pass if successful (HTTP status 200),
      *         or an appropriate error response otherwise (HTTP status 409 if the boarding pass already exists,
      *         or HTTP status 500 for internal server error).
@@ -62,9 +60,10 @@ public class BoardingPassController {
     @PostMapping
     public ResponseEntity<BoardingPass> createBoardingPass(
         @Parameter(description = "Boarding pass object to be created", required = true)
-        @RequestBody BoardingPass boardingPass) {
+        @RequestParam("lastName") String lastName,
+        @RequestParam("flightNumber") String flightNumber) {
         try {
-            return boardingPassService.createBoardingPass(boardingPass);
+            return boardingPassService.createBoardingPass(lastName, flightNumber);
         } catch (DataDuplicatedException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
         } catch (BusinessException e) {

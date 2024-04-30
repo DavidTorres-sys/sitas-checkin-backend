@@ -11,10 +11,10 @@ public interface IBoardingPassService {
     /**
      * Creates a new boarding pass.
      *
-     * @param boardingPass The boarding pass to create.
-     * @return The created boarding pass.
+     * @param lastName     The last name of the passenger.
+     * @param flightNumber The flight number.
      */
-    public ResponseEntity<BoardingPass> createBoardingPass(BoardingPass boardingPass);
+    public ResponseEntity<BoardingPass> createBoardingPass(String lastName, String flightNumber);
 
     /**
      * Retrieves an existing boarding pass.
