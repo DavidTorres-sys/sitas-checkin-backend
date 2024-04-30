@@ -17,7 +17,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: restrepotorres/backend:version0.0.0
     ports:
       - "8080:8080"
     depends_on:

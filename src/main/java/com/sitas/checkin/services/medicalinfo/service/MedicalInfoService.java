@@ -1,7 +1,7 @@
-package com.sitas.checkin.services;
+package com.sitas.checkin.services.medicalinfo.service;
 
-import com.sitas.checkin.domain.entity.MedicalInfoEntity;
-import com.sitas.checkin.repository.IMedicalInfoRepository;
+import com.sitas.checkin.domain.model.user.MedicalInfo;
+import com.sitas.checkin.domain.repository.user.IMedicalInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ public class MedicalInfoService {
     @Autowired
     private IMedicalInfoRepository repository;
 
-    public MedicalInfoEntity saveMedicalInfo(MedicalInfoEntity medicalInfo){
+    public MedicalInfo saveMedicalInfo(MedicalInfo medicalInfo){
         return repository.save(medicalInfo);
     }
 }
