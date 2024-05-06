@@ -17,6 +17,7 @@ Also using a Dockerfile for the Spring-Boot app with Maven.
    ```bash
     docker pull prom/prometheus
     docker run -d -p 9090:9090 -v .\prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+    docker run -d -p 3000:3000 grafana/grafana
     ```
     ```bash
     docker-compose up --build
@@ -50,7 +51,13 @@ Also using a Dockerfile for the Spring-Boot app with Maven.
     
 6. Once the application is running, you can access the Swagger UI at
 
-   - [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+   - [localhost:8080/swagger-ui](http://localhost:8080/swagger-ui.html)
+
+7. To configure grafana go to  [localhost:3000](http://localhost:3000/). Credentials are admin admin
+Add data sources, select prometheus, the prometheus server url is http://host.docker.internal:9090, 
+save & test. Click on building a dashboard, import dashboard, put 4701 as dashboard id, load
+select prometheus data source, import
+
 ## Customization
 
 You can customize the Oracle database configuration by modifying the `compose.yaml` file:
