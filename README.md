@@ -11,10 +11,13 @@ Also using a Dockerfile for the Spring-Boot app with Maven.
 
 1. Clone or download this repository to your local machine.
 
-2. Navigate to the directory containing the `compose.yaml` file.
+2. Navigate to the directory containing the `prometheus.yml` file and change the ip in the last line.
 
-3. Run the following command to start the containers:
-
+3. Run the following commands to start the containers:
+   ```bash
+    docker pull prom/prometheus
+    docker run -d -p 9090:9090 -v .\prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+    ```
     ```bash
     docker-compose up --build
     ```

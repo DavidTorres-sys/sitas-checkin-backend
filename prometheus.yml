@@ -26,4 +26,4 @@ scrape_configs:
 
     static_configs:
 
-      - targets: ['172.28.16.1:8089']
+      - targets: ['192.168.1.4:8080'] #change for your machine ip
