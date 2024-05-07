@@ -74,4 +74,82 @@ public class BoardingPassController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
         }
     }
+
+    /**
+     * Retrieves a boarding pass by ID.
+     *
+     * @param boardingPassId The ID of the boarding pass to retrieve.
+     * @return ResponseEntity containing the retrieved boarding pass if found,
+     *         else returns an appropriate error response.
+     * @throws BusinessException         If there is a data integrity violation or a database error.
+     * @throws IllegalArgumentException If an invalid argument is provided.
+     * @throws ResponseStatusException   If there is an unexpected error.
+     */
+    @Operation(summary = "get a boarding pass")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Retrieve Boarding pass", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = BoardingPass.class)) }),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = StandardResponse.class)) }),
+        @ApiResponse(responseCode = "404", description = "Boarding pass not found", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = StandardResponse.class)) }),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class)) })
+    })
+    @GetMapping("/get-boarding-pass/{boardingPassId}")
+    public ResponseEntity<BoardingPass> getBoardingPass (
+        @Parameter(description = "The ID of the boarding pass information to retrieve", example = "123")
+        @PathVariable  Integer boardingPassId
+    ) {
+        try {
+            return boardingPassService.getBoardingPass(boardingPassId);
+        } catch (DataDuplicatedException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+        } catch (BusinessException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
+        }
+    }
+
+    /**
+     * Retrieves a boarding pass by ID.
+     *
+     * @param passengerId The ID of the boarding pass to retrieve.
+     * @return ResponseEntity containing the retrieved boarding pass if found,
+     *         else returns an appropriate error response.
+     * @throws BusinessException         If there is a data integrity violation or a database error.
+     * @throws IllegalArgumentException If an invalid argument is provided.
+     * @throws ResponseStatusException   If there is an unexpected error.
+     */
+    @Operation(summary = "get a boarding pass by passenger id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Retrieve Boarding pass", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = BoardingPass.class)) }),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = StandardResponse.class)) }),
+        @ApiResponse(responseCode = "404", description = "Boarding pass not found", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = StandardResponse.class)) }),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class)) })
+    })
+    @GetMapping("/get-boarding-pass/{passengerId}")
+    public ResponseEntity<BoardingPass> getBoardingPassByPassenger (
+        @Parameter(description = "The ID of the passenger associated to a boarding pass to retrieve", example = "123")
+        @PathVariable Integer passengerId
+    ) {
+        try {
+            return boardingPassService.getBoardingPassByPassenger(passengerId);
+        } catch (DataDuplicatedException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+        } catch (BusinessException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
+        }
+    }
 }

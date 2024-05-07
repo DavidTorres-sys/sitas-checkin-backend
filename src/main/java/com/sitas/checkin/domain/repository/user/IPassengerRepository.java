@@ -11,5 +11,11 @@ import java.util.Optional;
  * Extends JpaRepository interface to inherit CRUD methods.
  */
 public interface IPassengerRepository extends JpaRepository<Passenger,Integer> {
+    /**
+     * Retrieves a passenger by their person ID.
+     *
+     * @param personId The ID of the person associated with the passenger.
+     * @return An Optional containing the passenger if found, otherwise empty.
+     */
     public Optional<Passenger> findByPersonId(Integer personId);
 }

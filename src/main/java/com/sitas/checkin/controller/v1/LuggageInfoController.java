@@ -93,7 +93,7 @@ public class LuggageInfoController {
      */
     @Operation(summary = "retrieve luggage info of a passager")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "retrieve Luggage Info", content = {
+        @ApiResponse(responseCode = "200", description = "Retrieve Luggage Info", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = LuggageInfo.class)) }),
         @ApiResponse(responseCode = "400", description = "Bad Request", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = StandardResponse.class)) }),
@@ -105,8 +105,7 @@ public class LuggageInfoController {
     @GetMapping("/get-luggage-info/{luggageInfoId}")
     public ResponseEntity<LuggageInfo> getLuggageInfo(
         @Parameter(description = "The ID of the luggage information to retrieve", example = "123")
-        @RequestParam Integer luggageInfoId
-    ) {
+        @PathVariable Integer luggageInfoId) {
         try {
             return luggageInfoService.getLuggageInfo(luggageInfoId);
         } catch (DataIntegrityViolationException e) {
@@ -147,7 +146,7 @@ public class LuggageInfoController {
     @DeleteMapping("/delete-luggage-info/{luggageInfoId}")
     public ResponseEntity<String> deleteLuggageInfo(
         @Parameter(description = "The ID of the luggage information to delete", example = "123")
-        @RequestParam Integer luggageInfoId
+        @PathVariable Integer luggageInfoId
     ) {
         try {
             return luggageInfoService.deleteLuggageInfo(luggageInfoId);

@@ -77,27 +77,27 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
     public ResponseEntity<BoardingPass> createBoardingPass(String lastName, String flightNumber) {
         try {
             // Find passenger by last name
-            Optional<Person> personOptional = personRepository.findByLastName(lastName);
-            // Find flight by flight number
-            Optional<Flight> flightOptional = flightRepository.findByFlightNumber(flightNumber);
+            Person person = personRepository.findByLastName(lastName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found"));
 
-            if (personOptional.isEmpty() || flightOptional.isEmpty()) { return ResponseEntity.notFound().build(); }
-            Person person = personOptional.get();
-            Flight flight = flightOptional.get();
+            // Find flight by flight number
+            Flight flight = flightRepository.findByFlightNumber(flightNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Flight not found"));
 
             // Find passenger by id
-            Optional<Passenger> passengerOptional = passengerRepository.findByPersonId(person.getPersonId());
+            Passenger passenger = passengerRepository.findByPersonId(person.getPersonId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found"));
 
-            if (passengerOptional.isEmpty()) { return ResponseEntity.notFound().build(); }
-            Passenger passenger = passengerOptional.get();
-            Optional<Booking> optionalBooking = this.bookingRepository.findById(passenger.getBookingId());
+            // Find booking by id
+            Booking booking = bookingRepository.findById(passenger.getBookingId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
 
-            if (optionalBooking.isEmpty()) { return ResponseEntity.notFound().build(); }
-            Booking booking = optionalBooking.get();
             // Create luggage info
             LuggageInfo luggageInfo = createLuggageInfo();
+
             // Create medical info
             MedicalInfo medicalInfo = createMedicalInfo(person.getPersonId());
+
             // Create a new boarding pass
             BoardingPass boardingPass = createNewBoardingPass(passenger, flight, luggageInfo, medicalInfo, booking);
 
@@ -120,7 +120,7 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
     /**
      * Retrieves an existing boarding pass for the given passenger ID, only read method.
      *
-     * @param passengerId The ID of the passenger to retrieve the boarding pass for.
+     * @param boardingPassId The ID of the boarding pass to retrieve.
      * @return ResponseEntity containing the retrieved boarding pass, or 404 Not Found if not found.
      * @throws BusinessException          If a data integrity violation or database error occurs.
      * @throws IllegalArgumentException  If an invalid argument is passed.
@@ -128,10 +128,52 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
      */
     @Transactional(readOnly = true)
     @Override
-    public ResponseEntity<BoardingPass> getBoardingPass(int passengerId) {
+    public ResponseEntity<BoardingPass> getBoardingPass(Integer boardingPassId) {
         try {
             // Retrieve the boarding pass associated with the passenger ID
-            Optional<BoardingPass> optionalBoardingPass = boardingPassRepository.findById(passengerId);
+            Optional<BoardingPass> optionalBoardingPass = boardingPassRepository.findById(boardingPassId);
+            // Check if the boarding pass exists
+            if (optionalBoardingPass.isPresent()) {
+                // Boarding pass found, return it
+                BoardingPass boardingPass = optionalBoardingPass.get();
+                return ResponseEntity.ok(boardingPass);
+            } else {
+                // Boarding pass not found, return a 404 Not Found response
+                return ResponseEntity.notFound().build();
+            }
+        } catch (DataIntegrityViolationException e) {
+            // Handle data integrity violations
+            throw new BusinessException("Data integrity violation");
+        } catch (DataAccessException e) {
+            // Handle database access errors
+            throw new BusinessException("Database error");
+        } catch (IllegalArgumentException e) {
+            // Handle illegal argument exceptions
+            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
+        }catch (Throwable e) {
+            // Handle unexpected errors
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve boarding pass", e);
+        }
+    }
+
+    /**
+     * Retrieves the boarding pass associated with a specific passenger ID.
+     * This method is transactional and read-only.
+     *
+     * @param passengerId The unique identifier of the passenger.
+     * @return A ResponseEntity containing either:
+     *         - HTTP status 200 (OK) and the boarding pass associated with the provided passenger ID.
+     *         - HTTP status 404 (Not Found) if no boarding pass is found for the provided passenger ID.
+     * @throws BusinessException if there are data integrity violations or database access errors.
+     * @throws IllegalArgumentException if an invalid argument is provided.
+     * @throws ResponseStatusException if an unexpected error occurs.
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public ResponseEntity<BoardingPass> getBoardingPassByPassenger(Integer passengerId) {
+        try {
+            // Retrieve the boarding pass associated with the passenger ID
+            Optional<BoardingPass> optionalBoardingPass = boardingPassRepository.findByPassengerPassengerId(passengerId);
             // Check if the boarding pass exists
             if (optionalBoardingPass.isPresent()) {
                 // Boarding pass found, return it
