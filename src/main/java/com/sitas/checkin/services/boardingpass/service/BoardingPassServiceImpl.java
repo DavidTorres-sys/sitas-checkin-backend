@@ -4,9 +4,7 @@ package com.sitas.checkin.services.boardingpass.service;
 import com.sitas.checkin.domain.model.airline.Flight;
 import com.sitas.checkin.domain.model.user.*;
 import com.sitas.checkin.domain.repository.airline.IFlightRepository;
-import com.sitas.checkin.domain.repository.user.IBoardingPassRepository;
-import com.sitas.checkin.domain.repository.user.IPassengerRepository;
-import com.sitas.checkin.domain.repository.user.IPersonRepository;
+import com.sitas.checkin.domain.repository.user.*;
 import com.sitas.checkin.utils.exception.BusinessException;
 import com.sitas.checkin.utils.exception.DataDuplicatedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,25 +20,44 @@ import java.sql.Timestamp;
 import java.util.Optional;
 
 /**
- * Service class for managing boarding passes.
+ * Service class for managing boarding passes(Check-in).
  */
 @Service
-public class BoardingPassServiceImpl implements IBoardingPassService{
+public class BoardingPassServiceImpl implements IBoardingPassService {
 
     private final IBoardingPassRepository boardingPassRepository;
     private final IPassengerRepository passengerRepository;
     private final IFlightRepository flightRepository;
     private final IPersonRepository personRepository;
+    private final ILuggageInfoRepository luggageInfoRepository;
+    private final IMedicalInfoRepository medicalInfoRepository;
+    private final IBookingRepository bookingRepository;
 
+    /**
+     * Constructor of the BoardingPassServiceImpl class.
+     * @param boardingPassRepository Boarding pass repository.
+     * @param passengerRepository Passenger repository.
+     * @param personRepository Person repository.
+     * @param flightRepository Flight repository.
+     * @param luggageInfoRepository Luggage info repository
+     * @param medicalInfoRepository Medical info repository.
+     * @param bookingRepository booking repository
+     */
     @Autowired
     public BoardingPassServiceImpl(IBoardingPassRepository boardingPassRepository,
+                                   ILuggageInfoRepository luggageInfoRepository,
+                                   IMedicalInfoRepository medicalInfoRepository,
                                    IPassengerRepository passengerRepository,
                                    IPersonRepository personRepository,
-                                   IFlightRepository flightRepository) {
+                                   IFlightRepository flightRepository,
+                                   IBookingRepository bookingRepository) {
         this.boardingPassRepository = boardingPassRepository;
+        this.medicalInfoRepository = medicalInfoRepository;
+        this.luggageInfoRepository = luggageInfoRepository;
         this.passengerRepository = passengerRepository;
         this.flightRepository = flightRepository;
         this.personRepository = personRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     /**
@@ -55,37 +72,36 @@ public class BoardingPassServiceImpl implements IBoardingPassService{
      * @throws BusinessException          If a data integrity violation or database error occurs.
      * @throws IllegalArgumentException  If an invalid argument is passed.
      * @throws ResponseStatusException    If an unexpected error occurs during the operation.
-     *
      */
     @Override
     public ResponseEntity<BoardingPass> createBoardingPass(String lastName, String flightNumber) {
         try {
             // Find passenger by last name
-            Person person = personRepository.findByLastName(lastName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found"));
-
+            Optional<Person> personOptional = personRepository.findByLastName(lastName);
             // Find flight by flight number
-            Flight flight = flightRepository.findByFlightNumber(flightNumber)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Flight not found"));
+            Optional<Flight> flightOptional = flightRepository.findByFlightNumber(flightNumber);
+
+            if (personOptional.isEmpty() || flightOptional.isEmpty()) { return ResponseEntity.notFound().build(); }
+            Person person = personOptional.get();
+            Flight flight = flightOptional.get();
 
             // Find passenger by id
-            Passenger passenger = passengerRepository.findById(person.getPersonId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found"));
+            Optional<Passenger> passengerOptional = passengerRepository.findByPersonId(person.getPersonId());
 
+            if (passengerOptional.isEmpty()) { return ResponseEntity.notFound().build(); }
+            Passenger passenger = passengerOptional.get();
+            Optional<Booking> optionalBooking = this.bookingRepository.findById(passenger.getBookingId());
+
+            if (optionalBooking.isEmpty()) { return ResponseEntity.notFound().build(); }
+            Booking booking = optionalBooking.get();
+            // Create luggage info
+            LuggageInfo luggageInfo = createLuggageInfo();
+            // Create medical info
+            MedicalInfo medicalInfo = createMedicalInfo(person.getPersonId());
             // Create a new boarding pass
-            BoardingPass boardingPass = new BoardingPass();
-            boardingPass.setPassenger(passenger);
-            boardingPass.setFlight(flight);
-            // Assuming you have default values for medicalInfo and luggageInfo
-            boardingPass.setMedicalInfo(new MedicalInfo());
-            boardingPass.setLuggageInfo(new LuggageInfo());
-            boardingPass.setBoardingTime(new Timestamp(System.currentTimeMillis()));
+            BoardingPass boardingPass = createNewBoardingPass(passenger, flight, luggageInfo, medicalInfo, booking);
 
-            // Save the boarding pass
-            BoardingPass createdBoardingPass = boardingPassRepository.save(boardingPass);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdBoardingPass);
-
+            return new ResponseEntity<>(boardingPass, HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
             throw new BusinessException("Data integrity violation");
@@ -139,4 +155,56 @@ public class BoardingPassServiceImpl implements IBoardingPassService{
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve boarding pass", e);
         }
     }
+
+    /**
+     * Creates a new luggage information object with default values.
+     *
+     * @return The created luggage information object.
+     */
+    private LuggageInfo createLuggageInfo() {
+        LuggageInfo luggageInfo = new LuggageInfo();
+        luggageInfo.setShippingAddress("Pendiente");
+        luggageInfo.setLuggageId(0);
+        return luggageInfoRepository.save(luggageInfo);
+    }
+
+    /**
+     * Creates a new medical information object with default values.
+     *
+     * @param personId The ID of the person associated with the medical information.
+     * @return The created medical information object.
+     */
+    private MedicalInfo createMedicalInfo(Integer personId) {
+        MedicalInfo medicalInfo = new MedicalInfo();
+        medicalInfo.setPersonId(personId);
+        medicalInfo.setMedicalConditions("Pendiente");
+        medicalInfo.setContactName("Pendiente");
+        medicalInfo.setContactPhone("Pendiente");
+        return medicalInfoRepository.save(medicalInfo);
+    }
+
+    /**
+     * Creates a new boarding pass object.
+     *
+     * @param passenger   The passenger associated with the boarding pass.
+     * @param flight      The flight associated with the boarding pass.
+     * @param luggageInfo The luggage information associated with the boarding pass.
+     * @param medicalInfo The medical information associated with the boarding pass.
+     * @return The created boarding pass object.
+     */
+    private BoardingPass createNewBoardingPass(Passenger passenger,
+                                               Flight flight,
+                                               LuggageInfo luggageInfo,
+                                               MedicalInfo medicalInfo,
+                                               Booking booking) {
+        BoardingPass boardingPass = new BoardingPass();
+        boardingPass.setBooking(booking);
+        boardingPass.setPassenger(passenger);
+        boardingPass.setFlight(flight);
+        boardingPass.setLuggageInfo(luggageInfo);
+        boardingPass.setMedicalInfo(medicalInfo);
+        boardingPass.setBoardingTime(new Timestamp(System.currentTimeMillis()));
+        return boardingPassRepository.save(boardingPass);
+    }
+
 }

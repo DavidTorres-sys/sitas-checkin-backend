@@ -17,6 +17,7 @@ public class Person {
     @Column(name = "person_id")
     private Integer personId;
 
+    @JoinColumn(name = "IdentificationType", referencedColumnName = "id_identification_type")
     @Column(name = "id_identification_type", nullable = false)
     private Integer identificationTypeId;
 

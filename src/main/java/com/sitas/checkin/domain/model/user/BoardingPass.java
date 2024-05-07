@@ -32,8 +32,7 @@ public class BoardingPass {
      * Represents a many-to-one relationship with the Passenger entity.
      */
     @ManyToOne
-    @JoinColumn(name = "passenger_id", nullable = false)
-    @NonNull
+    @JoinColumn(name = "passenger_id", referencedColumnName = "passenger_id")
     private Passenger passenger;
 
     /**
@@ -41,8 +40,7 @@ public class BoardingPass {
      * Represents a many-to-one relationship with the Booking entity.
      */
     @ManyToOne
-    @JoinColumn(name = "booking_id", nullable = false)
-    @NonNull
+    @JoinColumn(name = "booking_id", referencedColumnName = "booking_id")
     private Booking booking;
 
     /**
@@ -50,8 +48,7 @@ public class BoardingPass {
      * Represents a many-to-one relationship with the Flight entity.
      */
     @ManyToOne
-    @JoinColumn(name = "Flight_ID", nullable = false)
-    @NonNull
+    @JoinColumn(name = "Flight_ID", referencedColumnName = "Flight_ID")
     private Flight flight;
 
     /**
@@ -59,8 +56,7 @@ public class BoardingPass {
      * Represents a many-to-one relationship with the MedicalInfo entity.
      */
     @ManyToOne
-    @JoinColumn(name = "MEDICAL_INFO_ID", nullable = false)
-    @NonNull
+    @JoinColumn(name = "MEDICAL_INFO_ID", referencedColumnName = "MEDICAL_INFO_ID")
     private MedicalInfo medicalInfo;
 
     /**
@@ -68,8 +64,7 @@ public class BoardingPass {
      * Represents a many-to-one relationship with the LuggageInfo entity.
      */
     @ManyToOne
-    @JoinColumn(name = "LUGGAGE_INFO_ID", nullable = false)
-    @NonNull
+    @JoinColumn(name = "LUGGAGE_INFO_ID", referencedColumnName = "LUGGAGE_INFO_ID")
     private LuggageInfo luggageInfo;
 
     /**

@@ -20,7 +20,7 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "flight_id")
-    private Long flightId;
+    private Integer flightId;
 
     /**
      * Flight number.

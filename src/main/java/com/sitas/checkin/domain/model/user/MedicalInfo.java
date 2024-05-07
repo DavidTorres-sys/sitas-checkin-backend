@@ -22,8 +22,8 @@ public class MedicalInfo {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int medicalInfoId;
-
+    @Column(name = "MEDICAL_INFO_ID")
+    private Integer medicalInfoId;
 
     /**
      * Identifier of the person associated with this medical information.

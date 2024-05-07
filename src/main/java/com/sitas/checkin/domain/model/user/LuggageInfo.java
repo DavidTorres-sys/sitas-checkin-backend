@@ -6,15 +6,15 @@ import jakarta.validation.constraints.Size;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 
 /**
  * Represents luggage information related to a user.
  * This class is mapped to the "LUGGAGE_INFO" table in the database.
  */
+@Getter
+@Setter
 @Entity
 @Data
 @NoArgsConstructor
@@ -25,6 +25,7 @@ public class LuggageInfo {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column (name = "LUGGAGE_INFO_ID")
     private Integer luggageInfoId;
 
     /**

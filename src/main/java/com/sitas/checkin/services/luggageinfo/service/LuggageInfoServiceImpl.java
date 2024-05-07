@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,7 +24,7 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
      * Dependency injection for ILuggageInfoRepository.
      */
     @Autowired
-    private ILuggageInfoRepository repository;
+    private ILuggageInfoRepository luggageInfoRepository;
 
     /**
      * Saves luggage information.
@@ -38,13 +39,13 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
     @Override
     public ResponseEntity<LuggageInfo> saveLuggageInfo(LuggageInfo luggageInfo) {
         try {
-            Optional<LuggageInfo> optionalLuggageInfo = repository.findById(luggageInfo.getLuggageInfoId());
+            Optional<LuggageInfo> optionalLuggageInfo = luggageInfoRepository.findById(luggageInfo.getLuggageInfoId());
             if (optionalLuggageInfo.isPresent()) {
                 // Luggage info already exists, return a 409 Conflict response
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             } else {
                 // Save the new luggage info
-                LuggageInfo savedLuggageInfo = repository.save(luggageInfo);
+                LuggageInfo savedLuggageInfo = luggageInfoRepository.save(luggageInfo);
                 return ResponseEntity.ok(savedLuggageInfo);
             }
         } catch (DataIntegrityViolationException e) {
@@ -75,11 +76,94 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
     @Transactional(readOnly = true)
     public ResponseEntity<LuggageInfo> getLuggageInfo(Integer luggageInfoId) {
         try {
-            Optional<LuggageInfo> optionalLuggageInfo = repository.findById(luggageInfoId);
+            Optional<LuggageInfo> optionalLuggageInfo = luggageInfoRepository.findById(luggageInfoId);
             if (optionalLuggageInfo.isPresent()) {
                 // Luggage info found, return it
                 LuggageInfo luggageInfo = optionalLuggageInfo.get();
                 return ResponseEntity.ok(luggageInfo);
+            } else {
+                // Luggage info not found, return a 404 Not Found response
+                return ResponseEntity.notFound().build();
+            }
+        } catch (DataIntegrityViolationException e) {
+            // Handle data integrity violations
+            throw new BusinessException("Data integrity violation");
+        } catch (DataAccessException e) {
+            // Handle database access errors
+            throw new BusinessException("Database error");
+        } catch (IllegalArgumentException e) {
+            // Handle illegal argument exceptions
+            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
+        } catch (Throwable e) {
+            // Handle unexpected errors
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
+        }
+    }
+
+    /**
+     * Delete luggage information by ID.
+     *
+     * @param luggageInfoId The ID of the luggage information to retrieve.
+     * @return String with a message if delete correctly, else returns a 404 Not Found response.
+     * @throws BusinessException         If there is a data integrity violation or a database error.
+     * @throws IllegalArgumentException If an invalid argument is provided.
+     * @throws ResponseStatusException   If there is an unexpected error.
+     */
+    @Override
+    public ResponseEntity<String> deleteLuggageInfo(Integer luggageInfoId) {
+        try {
+            Optional<LuggageInfo> optionalLuggageInfo = luggageInfoRepository.findById(luggageInfoId);
+            if (optionalLuggageInfo.isPresent()) {
+                luggageInfoRepository.deleteById(luggageInfoId);
+                return ResponseEntity.ok("Luggage info deleted correctly");
+            } else {
+                // Luggage info not found, return a 404 Not Found response
+                return ResponseEntity.notFound().build();
+            }
+        } catch (DataIntegrityViolationException e) {
+            // Handle data integrity violations
+            throw new BusinessException("Data integrity violation");
+        } catch (DataAccessException e) {
+            // Handle database access errors
+            throw new BusinessException("Database error");
+        } catch (IllegalArgumentException e) {
+            // Handle illegal argument exceptions
+            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
+        } catch (Throwable e) {
+            // Handle unexpected errors
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<LuggageInfo>> getAllLuggageInfo() {
+        return null;
+    }
+
+    /**
+     * Updates the information of a luggage item with the given ID.
+     *
+     * @param luggageInfoId The ID of the luggage item to update.
+     * @param luggageInfo   The updated luggage information.
+     * @return ResponseEntity containing the updated luggage information with a 200 OK response
+     *         if successful, or a 404 Not Found response if the luggage item with the specified ID
+     *         does not exist.
+     * @throws BusinessException        If there is a data integrity violation or a database error occurs.
+     * @throws IllegalArgumentException If the provided luggage ID is invalid.
+     * @throws ResponseStatusException   If an unexpected error occurs.
+     */
+    @Override
+    public ResponseEntity<LuggageInfo> putLuggageInfo(Integer luggageInfoId, LuggageInfo luggageInfo) {
+        try {
+            Optional<LuggageInfo> optionalLuggageInfo = luggageInfoRepository.findById(luggageInfoId);
+            if (optionalLuggageInfo.isPresent()) {
+                LuggageInfo existingLuggageInfo = optionalLuggageInfo.get();
+                // Update the existing luggage info with the new information
+                existingLuggageInfo.setLuggageInfoId(luggageInfoId);
+                existingLuggageInfo.setLuggageId(luggageInfo.getLuggageId());
+                existingLuggageInfo.setShippingAddress(luggageInfo.getShippingAddress());
+                LuggageInfo luggageInfoUpdated = luggageInfoRepository.save(existingLuggageInfo);
+                return ResponseEntity.ok(luggageInfoUpdated);
             } else {
                 // Luggage info not found, return a 404 Not Found response
                 return ResponseEntity.notFound().build();

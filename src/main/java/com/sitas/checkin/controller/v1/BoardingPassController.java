@@ -57,7 +57,7 @@ public class BoardingPassController {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class)) })
     })
-    @PostMapping
+    @PostMapping("/save-boarding-pass")
     public ResponseEntity<BoardingPass> createBoardingPass(
         @Parameter(description = "Boarding pass object to be created", required = true)
         @RequestParam("lastName") String lastName,
