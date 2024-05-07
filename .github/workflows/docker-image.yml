@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "ramamaster","ramadevelop" ]
+    branches: [ "master","develop", "dev"]
   pull_request:
-    branches: [ "ramamaster", "ramadevelop" ]
+    branches: [ "master", "develop", "dev"]
 
 jobs:
   build:
@@ -29,4 +29,3 @@ jobs:
           docker-compose push
           docker tag gvenzl/oracle-free:latest ${{secrets.DOCKERUSERNAME}}/oracle:version1.0.2
           docker push ${{secrets.DOCKERUSERNAME}}/oracle:version1.0.2
-          
