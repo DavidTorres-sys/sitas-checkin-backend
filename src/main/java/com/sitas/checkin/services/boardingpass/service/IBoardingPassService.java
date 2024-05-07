@@ -35,4 +35,16 @@ public interface IBoardingPassService {
      *         - HTTP status 404 (Not Found) if no boarding pass is found for the provided passenger ID.
      */
     public ResponseEntity<BoardingPass> getBoardingPassByPassenger(Integer passengerId);
+
+    /**
+     * Deletes a boarding pass by its ID.
+     *
+     * @param boardingPassId The ID of the boarding pass to delete.
+     * @return ResponseEntity indicating the outcome of the deletion operation.
+     *         If the boarding pass is deleted successfully, returns ResponseEntity with status 200 (OK)
+     *         and a success message. If the boarding pass is not found, returns ResponseEntity with
+     *         status 404 (Not Found). If an unexpected error occurs, returns ResponseEntity with
+     *         status 500 (Internal Server Error) and an error message.
+     */
+    public ResponseEntity<String> deleteBoardingPass(Integer boardingPassId);
 }

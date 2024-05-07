@@ -134,7 +134,6 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
             Optional<BoardingPass> optionalBoardingPass = boardingPassRepository.findById(boardingPassId);
             // Check if the boarding pass exists
             if (optionalBoardingPass.isPresent()) {
-                // Boarding pass found, return it
                 BoardingPass boardingPass = optionalBoardingPass.get();
                 return ResponseEntity.ok(boardingPass);
             } else {
@@ -181,6 +180,41 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
                 return ResponseEntity.ok(boardingPass);
             } else {
                 // Boarding pass not found, return a 404 Not Found response
+                return ResponseEntity.notFound().build();
+            }
+        } catch (DataIntegrityViolationException e) {
+            // Handle data integrity violations
+            throw new BusinessException("Data integrity violation");
+        } catch (DataAccessException e) {
+            // Handle database access errors
+            throw new BusinessException("Database error");
+        } catch (IllegalArgumentException e) {
+            // Handle illegal argument exceptions
+            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
+        }catch (Throwable e) {
+            // Handle unexpected errors
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve boarding pass", e);
+        }
+    }
+
+    /**
+     * Deletes a boarding pass by its ID.
+     *
+     * @param boardingPassId The ID of the boarding pass to delete.
+     * @return ResponseEntity with a success message if the boarding pass is deleted successfully,
+     *         or a ResponseEntity with status 404 if the boarding pass is not found.
+     * @throws BusinessException if there is a data integrity violation or a database access error.
+     * @throws IllegalArgumentException if the provided boarding pass ID is invalid.
+     * @throws ResponseStatusException if an unexpected error occurs while deleting the boarding pass.
+     */
+    @Override
+    public ResponseEntity<String> deleteBoardingPass(Integer boardingPassId) {
+        try {
+            Optional<BoardingPass> optionalBoardingPass = this.boardingPassRepository.findById(boardingPassId);
+            if (optionalBoardingPass.isPresent()) {
+                boardingPassRepository.deleteById(boardingPassId);
+                return ResponseEntity.ok("Boarding pass deleted correctly");
+            } else {
                 return ResponseEntity.notFound().build();
             }
         } catch (DataIntegrityViolationException e) {

@@ -152,4 +152,43 @@ public class BoardingPassController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
         }
     }
+
+    /**
+     * Deletes a boarding pass by its ID.
+     *
+     * @param boardingPassId The ID of the boarding pass to delete.
+     * @return ResponseEntity with a success message if the boarding pass is deleted successfully,
+     *         or a ResponseEntity with status 404 if the boarding pass is not found.
+     * @throws BusinessException if there is a data integrity violation or a database access error.
+     * @throws IllegalArgumentException if the provided boarding pass ID is invalid.
+     * @throws ResponseStatusException if an unexpected error occurs while deleting the boarding pass.
+     */
+    @Operation(summary = "delete a boarding pass by id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Boarding pass deleted correctly", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = BoardingPass.class)) }),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = StandardResponse.class)) }),
+        @ApiResponse(responseCode = "404", description = "Boarding pass not found", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = StandardResponse.class)) }),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class)) })
+    })
+    @DeleteMapping("/delete-boarding-pass/{boardingPassId}")
+    public ResponseEntity<String> deleteBoardingPass(
+        @Parameter(description = "The ID of the boarding pass to delete", example = "123")
+        @PathVariable Integer boardingPassId
+    ) {
+        try {
+            return boardingPassService.deleteBoardingPass(boardingPassId);
+        } catch (DataDuplicatedException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+        } catch (BusinessException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
+        }
+    }
 }

@@ -49,7 +49,7 @@ public class LuggageInfoController {
      * @throws IllegalArgumentException If the provided luggage information is invalid.
      * @throws ResponseStatusException   If an unexpected error occurs.
      */
-    @Operation(summary = "save a luggage info of a passager")
+    @Operation(summary = "save a luggage info of a passenger")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Luggage Info created", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = LuggageInfo.class)) }),

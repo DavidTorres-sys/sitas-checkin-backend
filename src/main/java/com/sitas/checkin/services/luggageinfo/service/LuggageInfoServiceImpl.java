@@ -20,11 +20,18 @@ import java.util.Optional;
 @Service
 public class LuggageInfoServiceImpl implements ILuggageInfoService {
 
+
+    private final ILuggageInfoRepository luggageInfoRepository;
+
     /**
-     * Dependency injection for ILuggageInfoRepository.
+     * Constructs a new instance of the LuggageInfoServiceImpl class with the provided luggage info repository.
+     *
+     * @param luggageInfoRepository The repository used for accessing luggage information data.
      */
     @Autowired
-    private ILuggageInfoRepository luggageInfoRepository;
+    public LuggageInfoServiceImpl(ILuggageInfoRepository luggageInfoRepository) {
+        this.luggageInfoRepository = luggageInfoRepository;
+    }
 
     /**
      * Saves luggage information.
@@ -46,7 +53,7 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
             } else {
                 // Save the new luggage info
                 LuggageInfo savedLuggageInfo = luggageInfoRepository.save(luggageInfo);
-                return ResponseEntity.ok(savedLuggageInfo);
+                return  new ResponseEntity<>(savedLuggageInfo, HttpStatus.CREATED);
             }
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -115,7 +122,7 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
             Optional<LuggageInfo> optionalLuggageInfo = luggageInfoRepository.findById(luggageInfoId);
             if (optionalLuggageInfo.isPresent()) {
                 luggageInfoRepository.deleteById(luggageInfoId);
-                return ResponseEntity.ok("Luggage info deleted correctly");
+                return ResponseEntity.ok("Luggage information deleted correctly");
             } else {
                 // Luggage info not found, return a 404 Not Found response
                 return ResponseEntity.notFound().build();
