@@ -3,10 +3,11 @@ package com.sitas.checkin.services.boardingpass.service;
 
 import com.sitas.checkin.domain.model.airline.Flight;
 import com.sitas.checkin.domain.model.user.*;
-import com.sitas.checkin.domain.repository.airline.IFlightRepository;
-import com.sitas.checkin.domain.repository.user.*;
+import com.sitas.checkin.persistance.repository.airline.IFlightRepository;
+import com.sitas.checkin.persistance.repository.user.*;
 import com.sitas.checkin.utils.exception.BusinessException;
 import com.sitas.checkin.utils.exception.DataDuplicatedException;
+import com.sitas.checkin.utils.exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -76,21 +77,22 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
     @Override
     public ResponseEntity<BoardingPass> createBoardingPass(String lastName, String flightNumber) {
         try {
+
             // Find passenger by last name
             Person person = personRepository.findByLastName(lastName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found"));
+                .orElseThrow(() -> new DataNotFoundException("Person not found"));
 
             // Find flight by flight number
             Flight flight = flightRepository.findByFlightNumber(flightNumber)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Flight not found"));
+                .orElseThrow(() -> new DataNotFoundException("Flight not found"));
 
             // Find passenger by id
             Passenger passenger = passengerRepository.findByPersonId(person.getPersonId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found"));
+                .orElseThrow(() -> new DataNotFoundException("Passenger not found"));
 
             // Find booking by id
             Booking booking = bookingRepository.findById(passenger.getBookingId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+                .orElseThrow(() -> new DataNotFoundException("Booking not found"));
 
             // Create luggage info
             LuggageInfo luggageInfo = createLuggageInfo();

@@ -1,8 +1,6 @@
-package com.sitas.checkin.domain.repository.user;
+package com.sitas.checkin.persistance.repository.user;
 import com.sitas.checkin.domain.model.user.LuggageInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
 
 /**
  * Interface for accessing and managing LuggageInfo entities in the database.

@@ -1,4 +1,4 @@
-package com.sitas.checkin.domain.repository.user;
+package com.sitas.checkin.persistance.repository.user;
 
 import com.sitas.checkin.domain.model.user.Passenger;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,6 @@
 package com.sitas.checkin.services.luggageinfo.service;
 import com.sitas.checkin.domain.model.user.LuggageInfo;
-import com.sitas.checkin.domain.repository.user.ILuggageInfoRepository;
+import com.sitas.checkin.persistance.repository.user.ILuggageInfoRepository;
 import com.sitas.checkin.utils.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

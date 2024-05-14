@@ -44,6 +44,8 @@ public class BoardingPassController {
      * @return ResponseEntity containing the created boarding pass if successful (HTTP status 200),
      *         or an appropriate error response otherwise (HTTP status 409 if the boarding pass already exists,
      *         or HTTP status 500 for internal server error).
+     * @throws BusinessException         If there is a data integrity violation or a database error.
+     * @throws IllegalArgumentException If an invalid argument is provided.
      * @throws ResponseStatusException If an error occurs during the operation.
      */
     @Operation(summary = "Create a boarding pass")

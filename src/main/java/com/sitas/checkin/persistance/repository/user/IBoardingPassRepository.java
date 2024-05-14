@@ -1,8 +1,7 @@
-package com.sitas.checkin.domain.repository.user;
+package com.sitas.checkin.persistance.repository.user;
 
 
 import com.sitas.checkin.domain.model.user.BoardingPass;
-import com.sitas.checkin.domain.model.user.Passenger;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -19,4 +18,7 @@ public interface IBoardingPassRepository extends JpaRepository<BoardingPass,Inte
      * @return The boarding pass associated with the passenger.
      */
     public Optional<BoardingPass> findByPassengerPassengerId(Integer passengerId);
+
+
+    public Optional<BoardingPass> findByPassengerPersonId(Integer personId);
 }

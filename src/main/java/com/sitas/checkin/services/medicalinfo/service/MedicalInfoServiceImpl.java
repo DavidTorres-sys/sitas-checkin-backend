@@ -1,10 +1,8 @@
 package com.sitas.checkin.services.medicalinfo.service;
 
-import com.sitas.checkin.domain.model.user.LuggageInfo;
 import com.sitas.checkin.domain.model.user.MedicalInfo;
-import com.sitas.checkin.domain.repository.user.IMedicalInfoRepository;
+import com.sitas.checkin.persistance.repository.user.IMedicalInfoRepository;
 import com.sitas.checkin.utils.exception.BusinessException;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;

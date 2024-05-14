@@ -58,7 +58,7 @@ You can customize the Oracle database configuration by modifying the `compose.ya
 
 ## Cleanup
 
-To stop and remove the Oracle container, run the following command:
+To stop and remove the containers, run the following command:
 
 ```bash
 docker-compose down

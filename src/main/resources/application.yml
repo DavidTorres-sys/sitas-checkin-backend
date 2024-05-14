@@ -14,6 +14,17 @@ spring:
       hibernate:
         order_inserts: true
         dialect: org.hibernate.dialect.OracleDialect
+  mail:
+    host: smtp.example.com
+    port: 587
+    username: airline@udea.edu.co
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 airline-api:
   openapi:

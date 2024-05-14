@@ -1,4 +1,4 @@
-package com.sitas.checkin.domain.repository.airline;
+package com.sitas.checkin.persistance.repository.airline;
 
 import com.sitas.checkin.domain.model.airline.Flight;
 import org.springframework.data.jpa.repository.JpaRepository;

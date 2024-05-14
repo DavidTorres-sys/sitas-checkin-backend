@@ -23,7 +23,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new StandardResponse<>(StandardResponse.StatusStandardResponse.ERROR, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-
     @ExceptionHandler(DataDuplicatedException.class)
     protected ResponseEntity<?> handleDataDuplicatedException(DataDuplicatedException ex) {
         return new ResponseEntity<>(new StandardResponse<>(StandardResponse.StatusStandardResponse.ERROR, ex.getMessage()), HttpStatus.CONFLICT);
