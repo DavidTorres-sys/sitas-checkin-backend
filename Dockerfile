@@ -14,7 +14,9 @@ RUN mvn dependency:go-offline
 COPY src ./src
 
 # Build the application
-RUN mvn package -DskipTests
+RUN mvn package 
+#uncoment next line to skip test
+#-DskipTests
 
 # Create a new stage for running the application
 FROM openjdk:17-slim AS runtime
