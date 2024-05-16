@@ -13,31 +13,21 @@ Also using a Dockerfile for the Spring-Boot app with Maven.
 
 2. Navigate to the directory containing the `compose.yaml` file.
 
-3. Run the following command to start the containers:
+3. Run the following command to start the database:
 
     ```bash
-    docker-compose up --build
+    docker-compose up --build oracle
     ```
+4. After the database is build, run the next command to test and build the backend.  
+    ```bash
+   docker-compose up --build backend
+   ```
+5. In the test folder can be found a example test. 
+Run test locally (on intellij) automatically fails. On step 4 tests are being running, so if 
+a test fails during the backend build, the log should display witch tests fails. Use this to test the backend
 
-   This command will pull the necessary Docker image (if not already present) and start the container.
 
-4. Wait for the container to initialize. You can monitor the progress by checking the logs:
-
-    - To see all the containers:
-
-      ```bash
-      docker ps
-      ```
-
-    - For example, to see the logs of the Oracle container:
-
-      ```bash
-      docker logs -f oracle
-      ```
-
-   Once the initialization is complete, you should see a message indicating that the database is ready to use.
-
-5. Connect to the Oracle database using your preferred client (e.g., SQL Developer) with the following connection details:
+6Connect to the Oracle database using your preferred client (e.g., SQL Developer) with the following connection details:
 
     - Hostname: localhost, host.docker.internal 127.0.0.1 (or the IP address of your Docker host machine)
     - Port: 1521
@@ -45,7 +35,7 @@ Also using a Dockerfile for the Spring-Boot app with Maven.
     - Username: system or sys
     - Password: password (or the password you specified in the environment variables)
     
-6. Once the application is running, you can access the Swagger UI at
+7.Once the application is running, you can access the Swagger UI at
 
    - [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 ## Customization

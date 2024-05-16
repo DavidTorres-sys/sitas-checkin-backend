@@ -9,8 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CheckinApplicationTests {
 
 	@Test
-	void example (){
+	void Example (){
 		assertEquals (2, 1+1);
 	}
+	@Test
+	void FailureExample (){
 
+		//uncomment next line to force a test fail
+		//assertEquals (3, 1+1);
+	}
 }
