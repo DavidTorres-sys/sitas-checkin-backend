@@ -1,11 +1,11 @@
 spring:
   application:
-    name: checkin
+    name: SITAS
   datasource:
-    url: jdbc:oracle:thin:@localhost:1521/free
-    username: system
-    password: password
-    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@192.168.30.68:1521/xe
+    username: SYSTEM
+    password: F4br1c43sc23l4
+    driver-class-name: oracle.jdbc.driver.OracleDriver
   jpa:
     show-sql: true
     hibernate:
@@ -28,13 +28,24 @@ spring:
 
 airline-api:
   openapi:
-    dev-url: http://localhost:8080/
+    dev-url: http://localhost:8007/
+
 server:
-  port: 8080
+  port: 8007
+  servlet:
+    context-path: /modulo-07
+  ssl:
+    key-store: classpath:codefact.p12
+    key-store-password: 123456
+    enabled-protocols: TLSv1.2
+    key-store-type: PKCS12
 logging:
   level:
+    spring-boot-web: DEBUG
     root: DEBUG
     org.springframework: DEBUG
+
+
 
 management:
   endpoint:

@@ -24,10 +24,16 @@ import org.springframework.web.server.ResponseStatusException;
  * Controller class for managing medical information.
  * Handles HTTP requests related to medical information management.
  */
+
+
 @RestController
 @RequestMapping("/v1/medical-info")
 public class MedicalInfoController {
 
+    @GetMapping("/test")
+    public String test(){
+        return "hi, hello, how are you?";
+    }
     private final IMedicalInfoService medicalInfoService;
 
     /**
