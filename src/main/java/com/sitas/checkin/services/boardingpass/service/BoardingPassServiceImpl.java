@@ -234,6 +234,11 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
         }
     }
 
+    @Override
+    public ResponseEntity<BoardingPass> putBoardingPass(Integer passengerId, BoardingPass boardingPass) {
+        return null;
+    }
+
     /**
      * Creates a new luggage information object with default values.
      *

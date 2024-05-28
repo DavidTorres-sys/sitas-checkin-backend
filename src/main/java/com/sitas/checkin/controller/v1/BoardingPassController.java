@@ -137,7 +137,7 @@ public class BoardingPassController {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class)) })
     })
-    @GetMapping("/get-boarding-pass/{passengerId}")
+    @GetMapping("/get-boarding-pass-by-passengerid/{passengerId}")
     public ResponseEntity<BoardingPass> getBoardingPassByPassenger (
         @Parameter(description = "The ID of the passenger associated to a boarding pass to retrieve", example = "123")
         @PathVariable Integer passengerId

@@ -47,4 +47,6 @@ public interface IBoardingPassService {
      *         status 500 (Internal Server Error) and an error message.
      */
     public ResponseEntity<String> deleteBoardingPass(Integer boardingPassId);
+
+    public ResponseEntity<BoardingPass> putBoardingPass(Integer passengerId, BoardingPass boardingPass);
 }
