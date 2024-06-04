@@ -4,7 +4,6 @@ import com.sitas.checkin.domain.model.user.BoardingPass;
 import com.sitas.checkin.services.boardingpass.service.IBoardingPassService;
 import com.sitas.checkin.utils.common.StandardResponse;
 import com.sitas.checkin.utils.exception.BusinessException;
-import com.sitas.checkin.utils.exception.DataDuplicatedException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -63,19 +61,8 @@ public class BoardingPassController {
     public ResponseEntity<BoardingPass> createBoardingPass(
         @Parameter(description = "Boarding pass object to be created", required = true)
         @RequestParam("lastName") String lastName,
-        @RequestParam("flightNumber") String flightNumber) {
-        try {
-            return boardingPassService.createBoardingPass(lastName, flightNumber);
-        } catch (DataDuplicatedException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
-        } catch (BusinessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
-        }
-    }
+        @RequestParam("flightNumber") String flightNumber
+    ) { return boardingPassService.createBoardingPass(lastName, flightNumber); }
 
     /**
      * Retrieves a boarding pass by ID.
@@ -102,19 +89,7 @@ public class BoardingPassController {
     public ResponseEntity<BoardingPass> getBoardingPass (
         @Parameter(description = "The ID of the boarding pass information to retrieve", example = "123")
         @PathVariable  Integer boardingPassId
-    ) {
-        try {
-            return boardingPassService.getBoardingPass(boardingPassId);
-        } catch (DataDuplicatedException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
-        } catch (BusinessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
-        }
-    }
+    ) { return boardingPassService.getBoardingPass(boardingPassId); }
 
     /**
      * Retrieves a boarding pass by ID.
@@ -141,19 +116,7 @@ public class BoardingPassController {
     public ResponseEntity<BoardingPass> getBoardingPassByPassenger (
         @Parameter(description = "The ID of the passenger associated to a boarding pass to retrieve", example = "123")
         @PathVariable Integer passengerId
-    ) {
-        try {
-            return boardingPassService.getBoardingPassByPassenger(passengerId);
-        } catch (DataDuplicatedException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
-        } catch (BusinessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
-        }
-    }
+    ) { return boardingPassService.getBoardingPassByPassenger(passengerId); }
 
     /**
      * Deletes a boarding pass by its ID.
@@ -177,20 +140,8 @@ public class BoardingPassController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class)) })
     })
     @DeleteMapping("/delete-boarding-pass/{boardingPassId}")
-    public ResponseEntity<String> deleteBoardingPass(
+    public ResponseEntity<Void> deleteBoardingPass(
         @Parameter(description = "The ID of the boarding pass to delete", example = "123")
         @PathVariable Integer boardingPassId
-    ) {
-        try {
-            return boardingPassService.deleteBoardingPass(boardingPassId);
-        } catch (DataDuplicatedException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
-        } catch (BusinessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
-        }
-    }
+    ) { return boardingPassService.deleteBoardingPass(boardingPassId); }
 }

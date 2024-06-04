@@ -77,22 +77,29 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
     @Override
     public ResponseEntity<BoardingPass> createBoardingPass(String lastName, String flightNumber) {
         try {
-
-            // Find passenger by last name
-            Person person = personRepository.findByLastName(lastName)
-                .orElseThrow(() -> new DataNotFoundException("Person not found"));
-
-            // Find flight by flight number
-            Flight flight = flightRepository.findByFlightNumber(flightNumber)
-                .orElseThrow(() -> new DataNotFoundException("Flight not found"));
-
+            // Find person by last name
+            Optional<Person> optionalPerson = personRepository.findByLastName(lastName);
+            if (optionalPerson.isEmpty()) {
+                throw new DataNotFoundException("Person with last name " + lastName + " not found.");
+            }
+            Optional<Flight> optionalFlight = flightRepository.findByFlightNumber(flightNumber);
+            if (optionalFlight.isEmpty()) {
+                throw new DataNotFoundException("Flight with number " + flightNumber + " not found.");
+            }
+            Person person = optionalPerson.get();
+            Flight flight = optionalFlight.get();
             // Find passenger by id
-            Passenger passenger = passengerRepository.findByPersonId(person.getPersonId())
-                .orElseThrow(() -> new DataNotFoundException("Passenger not found"));
-
+            Optional<Passenger> optionalPassenger = passengerRepository.findByPersonId(person.getPersonId());
+            if (optionalPassenger.isEmpty()) {
+                throw new DataNotFoundException("Passenger with person ID " + person.getPersonId() + " not found.");
+            }
+            Passenger passenger = optionalPassenger.get();
             // Find booking by id
-            Booking booking = bookingRepository.findById(passenger.getBookingId())
-                .orElseThrow(() -> new DataNotFoundException("Booking not found"));
+            Optional<Booking> optionalBooking = bookingRepository.findById(passenger.getBookingId());
+            if (optionalBooking.isEmpty()) {
+                throw new DataNotFoundException("Booking with ID " + passenger.getBookingId() + " not found.");
+            }
+            Booking booking = optionalBooking.get();
 
             // Create luggage info
             LuggageInfo luggageInfo = createLuggageInfo();
@@ -104,18 +111,15 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
             BoardingPass boardingPass = createNewBoardingPass(passenger, flight, luggageInfo, medicalInfo, booking);
 
             return new ResponseEntity<>(boardingPass, HttpStatus.CREATED);
-        } catch (DataIntegrityViolationException e) {
+        }  catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
-            throw new BusinessException("Data integrity violation");
+            throw new BusinessException("Data integrity violation occurred while creating boarding pass.");
         } catch (DataAccessException e) {
             // Handle database access errors
-            throw new BusinessException("Database error");
+            throw new BusinessException("Database error occurred while creating boarding pass.");
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle other unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create boarding pass", e);
         }
     }
 
@@ -140,7 +144,7 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
                 return ResponseEntity.ok(boardingPass);
             } else {
                 // Boarding pass not found, return a 404 Not Found response
-                return ResponseEntity.notFound().build();
+                throw new DataNotFoundException("Boarding pass with ID " + boardingPassId + " not found.");
             }
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -151,9 +155,6 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        }catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve boarding pass", e);
         }
     }
 
@@ -182,7 +183,7 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
                 return ResponseEntity.ok(boardingPass);
             } else {
                 // Boarding pass not found, return a 404 Not Found response
-                return ResponseEntity.notFound().build();
+                throw new DataNotFoundException("Boarding pass with passenger ID " + passengerId + " not found.");
             }
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -210,14 +211,14 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
      * @throws ResponseStatusException if an unexpected error occurs while deleting the boarding pass.
      */
     @Override
-    public ResponseEntity<String> deleteBoardingPass(Integer boardingPassId) {
+    public ResponseEntity<Void> deleteBoardingPass(Integer boardingPassId) {
         try {
             Optional<BoardingPass> optionalBoardingPass = this.boardingPassRepository.findById(boardingPassId);
             if (optionalBoardingPass.isPresent()) {
                 boardingPassRepository.deleteById(boardingPassId);
-                return ResponseEntity.ok("Boarding pass deleted correctly");
+                return ResponseEntity.ok().build();
             } else {
-                return ResponseEntity.notFound().build();
+                throw new DataNotFoundException("Boarding pass with ID " + boardingPassId + " not found.");
             }
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -225,12 +226,6 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
         } catch (DataAccessException e) {
             // Handle database access errors
             throw new BusinessException("Database error");
-        } catch (IllegalArgumentException e) {
-            // Handle illegal argument exceptions
-            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        }catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve boarding pass", e);
         }
     }
 
@@ -247,7 +242,7 @@ public class BoardingPassServiceImpl implements IBoardingPassService {
     private LuggageInfo createLuggageInfo() {
         LuggageInfo luggageInfo = new LuggageInfo();
         luggageInfo.setShippingAddress("Pendiente");
-        luggageInfo.setLuggageId(0);
+        luggageInfo.setLuggageId(1);
         return luggageInfoRepository.save(luggageInfo);
     }
 

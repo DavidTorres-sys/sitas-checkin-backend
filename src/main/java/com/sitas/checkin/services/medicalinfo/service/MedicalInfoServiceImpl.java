@@ -3,6 +3,7 @@ package com.sitas.checkin.services.medicalinfo.service;
 import com.sitas.checkin.domain.model.user.MedicalInfo;
 import com.sitas.checkin.persistance.repository.user.IMedicalInfoRepository;
 import com.sitas.checkin.utils.exception.BusinessException;
+import com.sitas.checkin.utils.exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -56,9 +57,6 @@ public class MedicalInfoServiceImpl implements IMedicalInfoService{
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
         }
     }
 
@@ -80,7 +78,7 @@ public class MedicalInfoServiceImpl implements IMedicalInfoService{
                 return ResponseEntity.ok(medicalInfo);
             } else {
                 // Luggage info not found, return a 404 Not Found response
-                return ResponseEntity.notFound().build();
+                throw new DataNotFoundException("Medical info with ID " + medicalInfoId + " not found.");
             }
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -91,9 +89,6 @@ public class MedicalInfoServiceImpl implements IMedicalInfoService{
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
         }
     }
 
@@ -119,7 +114,7 @@ public class MedicalInfoServiceImpl implements IMedicalInfoService{
                 MedicalInfo createdMedicalInfo = this.medicalInfoRepository.save(existingLuggageInfo);
                 return ResponseEntity.ok(createdMedicalInfo);
             } else {
-                return ResponseEntity.notFound().build();
+                throw new DataNotFoundException("Medical info with ID " + medicalInfoId + " not found.");
             }
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -130,9 +125,6 @@ public class MedicalInfoServiceImpl implements IMedicalInfoService{
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
         }
     }
 
@@ -147,15 +139,15 @@ public class MedicalInfoServiceImpl implements IMedicalInfoService{
      * returns ResponseEntity with status 500 (Internal Server Error) and an error message.
      */
     @Override
-    public ResponseEntity<String> deleteMedicalInfo(Integer medicalInfoId) {
+    public ResponseEntity<Void> deleteMedicalInfo(Integer medicalInfoId) {
         try {
             Optional<MedicalInfo> optionalMedicalInfo = medicalInfoRepository.findById(medicalInfoId);
             if (optionalMedicalInfo.isPresent()) {
                 medicalInfoRepository.deleteById(medicalInfoId);
-                return ResponseEntity.ok("Medical information deleted correctly");
+                return ResponseEntity.ok().build();
             } else {
                 // Luggage info not found, return a 404 Not Found response
-                return ResponseEntity.notFound().build();
+                throw new DataNotFoundException("Medical info with ID " + medicalInfoId + " not found.");
             }
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -166,9 +158,6 @@ public class MedicalInfoServiceImpl implements IMedicalInfoService{
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
         }
     }
 }

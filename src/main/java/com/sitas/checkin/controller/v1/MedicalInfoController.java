@@ -67,23 +67,7 @@ public class MedicalInfoController {
     public ResponseEntity<MedicalInfo> addMedicalInfo(
         @Parameter(description = "Medical information object to be created", required = true)
         @RequestBody MedicalInfo medicalInfo
-    ) {
-        try {
-            return medicalInfoService.createMedicalInfo(medicalInfo);
-        } catch (DataIntegrityViolationException e) {
-            // Handle data integrity violations
-            throw new BusinessException("Data integrity violation");
-        } catch (DataAccessException e) {
-            // Handle database access errors
-            throw new BusinessException("Database error");
-        } catch (IllegalArgumentException e) {
-            // Handle illegal argument exceptions
-            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
-        }
-    }
+    ) { return medicalInfoService.createMedicalInfo(medicalInfo); }
 
     /**
      * Retrieves luggage information by ID.
@@ -108,23 +92,8 @@ public class MedicalInfoController {
     @GetMapping("/get-medical-info/{medicalInfoId}")
     public ResponseEntity<MedicalInfo> getMedicalInfo(
         @Parameter(description = "The ID of the medical information to retrieve", example = "123")
-        @PathVariable Integer medicalInfoId) {
-        try {
-            return medicalInfoService.getMedicalInfo(medicalInfoId);
-        } catch (DataIntegrityViolationException e) {
-            // Handle data integrity violations
-            throw new BusinessException("Data integrity violation");
-        } catch (DataAccessException e) {
-            // Handle database access errors
-            throw new BusinessException("Database error");
-        } catch (IllegalArgumentException e) {
-            // Handle illegal argument exceptions
-            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
-        }
-    }
+        @PathVariable Integer medicalInfoId
+    ) { return medicalInfoService.getMedicalInfo(medicalInfoId); }
 
     /**
      * Delete luggage information by ID.
@@ -147,26 +116,10 @@ public class MedicalInfoController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class)) })
     })
     @DeleteMapping("/delete-medical-info/{medicalInfoId}")
-    public ResponseEntity<String> deleteMedicalInfo(
+    public ResponseEntity<Void> deleteMedicalInfo(
         @Parameter(description = "The ID of the medical information to delete", example = "123")
         @PathVariable Integer medicalInfoId
-    ) {
-        try {
-            return medicalInfoService.deleteMedicalInfo(medicalInfoId);
-        } catch (DataIntegrityViolationException e) {
-            // Handle data integrity violations
-            throw new BusinessException("Data integrity violation");
-        } catch (DataAccessException e) {
-            // Handle database access errors
-            throw new BusinessException("Database error");
-        } catch (IllegalArgumentException e) {
-            // Handle illegal argument exceptions
-            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
-        }
-    }
+    ) { return medicalInfoService.deleteMedicalInfo(medicalInfoId); }
 
     /**
      * Updates medical information of a passenger by ID.
@@ -198,21 +151,5 @@ public class MedicalInfoController {
         @PathVariable Integer medicalInfoId,
         @Parameter(description = "Updated luggage information", required = true)
         @RequestBody MedicalInfo medicalInfo
-    ) {
-        try {
-            return medicalInfoService.putMedicalInfo(medicalInfoId, medicalInfo);
-        } catch (DataIntegrityViolationException e) {
-            // Handle data integrity violations
-            throw new BusinessException("Data integrity violation");
-        } catch (DataAccessException e) {
-            // Handle database access errors
-            throw new BusinessException("Database error");
-        } catch (IllegalArgumentException e) {
-            // Handle illegal argument exceptions
-            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
-        }
-    }
+    ) { return medicalInfoService.putMedicalInfo(medicalInfoId, medicalInfo); }
 }

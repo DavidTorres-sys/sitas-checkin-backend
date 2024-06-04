@@ -46,5 +46,5 @@ public interface IMedicalInfoService {
      *         returns ResponseEntity with status 404 (Not Found). If an unexpected error occurs,
      *         returns ResponseEntity with status 500 (Internal Server Error) and an error message.
      */
-    public ResponseEntity<String> deleteMedicalInfo(Integer medicalInfoId);
+    public ResponseEntity<Void> deleteMedicalInfo(Integer medicalInfoId);
 }

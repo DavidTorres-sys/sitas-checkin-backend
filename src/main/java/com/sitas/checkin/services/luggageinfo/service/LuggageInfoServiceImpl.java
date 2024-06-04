@@ -2,6 +2,7 @@ package com.sitas.checkin.services.luggageinfo.service;
 import com.sitas.checkin.domain.model.user.LuggageInfo;
 import com.sitas.checkin.persistance.repository.user.ILuggageInfoRepository;
 import com.sitas.checkin.utils.exception.BusinessException;
+import com.sitas.checkin.utils.exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -64,9 +65,6 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
         }
     }
 
@@ -101,9 +99,6 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
         }
     }
 
@@ -117,15 +112,15 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
      * @throws ResponseStatusException   If there is an unexpected error.
      */
     @Override
-    public ResponseEntity<String> deleteLuggageInfo(Integer luggageInfoId) {
+    public ResponseEntity<Void> deleteLuggageInfo(Integer luggageInfoId) {
         try {
             Optional<LuggageInfo> optionalLuggageInfo = luggageInfoRepository.findById(luggageInfoId);
             if (optionalLuggageInfo.isPresent()) {
                 luggageInfoRepository.deleteById(luggageInfoId);
-                return ResponseEntity.ok("Luggage information deleted correctly");
+                return ResponseEntity.ok().build();
             } else {
                 // Luggage info not found, return a 404 Not Found response
-                return ResponseEntity.notFound().build();
+                throw new DataNotFoundException("Luggage info with ID " + luggageInfoId + " not found.");
             }
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -136,9 +131,6 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
         }
     }
 
@@ -173,7 +165,7 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
                 return ResponseEntity.ok(luggageInfoUpdated);
             } else {
                 // Luggage info not found, return a 404 Not Found response
-                return ResponseEntity.notFound().build();
+                throw new DataNotFoundException("Luggage info with ID " + luggageInfoId + " not found.");
             }
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violations
@@ -184,9 +176,6 @@ public class LuggageInfoServiceImpl implements ILuggageInfoService {
         } catch (IllegalArgumentException e) {
             // Handle illegal argument exceptions
             throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
         }
     }
 }

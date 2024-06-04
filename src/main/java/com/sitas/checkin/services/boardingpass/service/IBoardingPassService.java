@@ -46,7 +46,7 @@ public interface IBoardingPassService {
      *         status 404 (Not Found). If an unexpected error occurs, returns ResponseEntity with
      *         status 500 (Internal Server Error) and an error message.
      */
-    public ResponseEntity<String> deleteBoardingPass(Integer boardingPassId);
+    public ResponseEntity<Void> deleteBoardingPass(Integer boardingPassId);
 
     public ResponseEntity<BoardingPass> putBoardingPass(Integer passengerId, BoardingPass boardingPass);
 }

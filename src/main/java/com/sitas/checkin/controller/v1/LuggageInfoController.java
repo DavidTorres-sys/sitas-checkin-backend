@@ -64,23 +64,7 @@ public class LuggageInfoController {
     public ResponseEntity<LuggageInfo> addLuggageInfo(
         @Parameter(description = "Luggage info object to be created", required = true)
         @RequestBody LuggageInfo luggageInfo
-    ) {
-        try {
-            return luggageInfoService.saveLuggageInfo(luggageInfo);
-        } catch (DataIntegrityViolationException e) {
-            // Handle data integrity violations
-            throw new BusinessException("Data integrity violation");
-        } catch (DataAccessException e) {
-            // Handle database access errors
-            throw new BusinessException("Database error");
-        } catch (IllegalArgumentException e) {
-            // Handle illegal argument exceptions
-            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
-        }
-    }
+    ) { return luggageInfoService.saveLuggageInfo(luggageInfo); }
 
     /**
      * Retrieves luggage information by ID.
@@ -105,23 +89,8 @@ public class LuggageInfoController {
     @GetMapping("/get-luggage-info/{luggageInfoId}")
     public ResponseEntity<LuggageInfo> getLuggageInfo(
         @Parameter(description = "The ID of the luggage information to retrieve", example = "123")
-        @PathVariable Integer luggageInfoId) {
-        try {
-            return luggageInfoService.getLuggageInfo(luggageInfoId);
-        } catch (DataIntegrityViolationException e) {
-            // Handle data integrity violations
-            throw new BusinessException("Data integrity violation");
-        } catch (DataAccessException e) {
-            // Handle database access errors
-            throw new BusinessException("Database error");
-        } catch (IllegalArgumentException e) {
-            // Handle illegal argument exceptions
-            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
-        }
-    }
+        @PathVariable Integer luggageInfoId
+    ) { return luggageInfoService.getLuggageInfo(luggageInfoId); }
 
     /**
      * Delete luggage information by ID.
@@ -144,26 +113,10 @@ public class LuggageInfoController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class)) })
     })
     @DeleteMapping("/delete-luggage-info/{luggageInfoId}")
-    public ResponseEntity<String> deleteLuggageInfo(
+    public ResponseEntity<Void> deleteLuggageInfo(
         @Parameter(description = "The ID of the luggage information to delete", example = "123")
         @PathVariable Integer luggageInfoId
-    ) {
-        try {
-            return luggageInfoService.deleteLuggageInfo(luggageInfoId);
-        } catch (DataIntegrityViolationException e) {
-            // Handle data integrity violations
-            throw new BusinessException("Data integrity violation");
-        } catch (DataAccessException e) {
-            // Handle database access errors
-            throw new BusinessException("Database error");
-        } catch (IllegalArgumentException e) {
-            // Handle illegal argument exceptions
-            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
-        }
-    }
+    ) { return luggageInfoService.deleteLuggageInfo(luggageInfoId); }
 
 
     /**
@@ -196,21 +149,5 @@ public class LuggageInfoController {
         @PathVariable Integer luggageInfoId,
         @Parameter(description = "Updated luggage information", required = true)
         @RequestBody LuggageInfo luggageInfo
-    ) {
-        try {
-            return luggageInfoService.putLuggageInfo(luggageInfoId, luggageInfo);
-        } catch (DataIntegrityViolationException e) {
-            // Handle data integrity violations
-            throw new BusinessException("Data integrity violation");
-        } catch (DataAccessException e) {
-            // Handle database access errors
-            throw new BusinessException("Database error");
-        } catch (IllegalArgumentException e) {
-            // Handle illegal argument exceptions
-            throw new IllegalArgumentException("Invalid argument: " + e.getMessage(), e);
-        } catch (Throwable e) {
-            // Handle unexpected errors
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve luggage info", e);
-        }
-    }
+    ) { return luggageInfoService.putLuggageInfo(luggageInfoId, luggageInfo); }
 }

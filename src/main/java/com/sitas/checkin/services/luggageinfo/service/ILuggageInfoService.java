@@ -33,7 +33,7 @@ public interface ILuggageInfoService {
      * @param luggageInfoId The ID of the luggage information to retrieve.
      * @return String with a message if delete correctly, else returns a 404 Not Found response.
      */
-    public ResponseEntity<String> deleteLuggageInfo(Integer luggageInfoId);
+    public ResponseEntity<Void> deleteLuggageInfo(Integer luggageInfoId);
 
     /**
      * Retrieves all luggage information.
