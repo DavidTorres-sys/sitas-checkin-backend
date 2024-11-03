@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boarding Pass</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .boarding-pass {
+            width: 40em;
+            margin: 50px auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .pass-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .flight-info {
+            display:flex;
+            margin-bottom: 20px;
+        }
+        .flight-info p {
+            margin: 5px 0;
+        }
+        .passenger-info {
+            margin-bottom: 20px;
+        }
+        .passenger-info p {
+            margin: 5px 0;
+        }
+        .title {
+            font-weight: bold;
+        }
+        .info {
+            padding: 1em;
+        }
+        .title-light {
+            font-weight: lighter;
+        }
+    </style>
+</head>
+<body>
+<div class="boarding-pass">
+    <div class="pass-header">
+        <h2>Boarding Pass</h2>
+    </div>
+    <div class="flight-info">
+        <p>Nombre del pasajero: </p>
+        <p>{{pasenger.name}}</p>
+    </div>
+    <div class="flight-info">
+        <div class="info">
+            <p class="title">Hora en la Sala</p>
+            <p>{{Booking.bookingDate}}</p>
+        </div>
+        <div class="info">
+            <p class="title">Grupo</p>
+            <p>{{Booking.bookingDate}}</p>
+        </div>
+        <div class="info">
+            <p class="title">Asiento</p>
+            <p>{{Booking.bookingDate}}</p>
+        </div>
+    </div>
+    <div class="flight-info">
+        <p class="title-light">
+            Verifica la sala en las pantallas del aeropuerto
+        </p>
+    </div>
+</div>
+</body>
+</html>

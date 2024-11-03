@@ -45,6 +45,12 @@ Also using a Dockerfile for the Spring-Boot app with Maven.
     - Username: system or sys
     - Password: password (or the password you specified in the environment variables)
 
+    
+6. Run the database script to create the tables and insert some data(you can use SQL Developer).
+
+7. Once the application is running, you can access the Swagger UI at
+
+   - [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 ## Customization
 
 You can customize the Oracle database configuration by modifying the `compose.yaml` file:
@@ -55,7 +61,7 @@ You can customize the Oracle database configuration by modifying the `compose.ya
 
 ## Cleanup
 
-To stop and remove the Oracle container, run the following command:
+To stop and remove the containers, run the following command:
 
 ```bash
 docker-compose down
